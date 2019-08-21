@@ -74,7 +74,7 @@ class GitHub:
             print("Doesn't have README")
 
     def _download_readme(self, readme_url, user, repo):
-        readme_folder = os.path.abspath(os.path.join(SCRIPT_PATH, os.pardir)) + "/readmes"
+        readme_folder = os.path.abspath(os.path.join(SCRIPT_PATH, os.pardir)) + "/HelpBoot/readmes"
 
         self._check_rate_limit()
 
