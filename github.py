@@ -17,23 +17,27 @@ class GitHub:
 
         following_list_order = []
         for following_user in following_list:
-            # t = threading.Thread(target=self.process_user_repositories, args=(following_user,))
-            # t.start()
-            self.process_user_repositories(following_user, search)
-            following_list_order.append(tuple(following_user, self.process_user_repositories(following_user, search)))
-        # while threading.active_count() != 1:
-        # pass
+            #t = threading.Thread(target=following_list_order.append({'user': following_user, 'value': self.process_user_repositories(following_user, search)}))
+            #t.start()
+            following_list_order.append({'user': following_user, 'value': self.process_user_repositories(following_user, search)})
+        #while threading.active_count() != 1:
+            #pass
+
+        def myFunc(e):
+            return e['value']
 
         if typesearch == '#Quem':
             print(search)
             print(typesearch)
-            print(following_list_order.sort(key=lambda x: x[1])[0])
+            print(sorted(following_list_order, key=lambda x: [1], reverse=True)[1].get("user"))
+            #following_list_order.sort(reverse=True, key=myFunc)[1])
 
         elif typesearch == '#Quais':
+
             print(search)
             print(typesearch)
-            for users in following_list_order.sort(key=lambda x: x[1]):
-                print(users)
+            for users in sorted(following_list_order, key=lambda x: [1], reverse=True):
+                print(users.get("user"))
 
         else:
             print('parametro de pesquisa fora do padrão, por favor informe a pesquisa novamente')
@@ -49,12 +53,12 @@ class GitHub:
                 if search.upper() == language.upper():
                     countrepository += 1
 
-            print("{user}/{repo} {lang}".format(user=user, repo=repository, lang=repo_language))
+            #print("{user}/{repo} {lang}".format(user=user, repo=repository, lang=repo_language))
             readme = self.get_repository_readme(user, repository)
 
-            if readme.str().upper().contains(search.upper):
+            if readme != "Doesn't have README" and search.upper() in readme.upper():
                 countreadme += 1
-
+        #print(countrepository + countreadme)
         return countrepository + countreadme
 
     def get_following(self, user):
@@ -97,7 +101,7 @@ class GitHub:
             readme = self._download_readme(readme_url, user, repo)
         else:
             readme = "Doesn't have README"
-        print(readme)
+
         return readme
 
     def _download_readme(self, readme_url, user, repo):
@@ -106,11 +110,12 @@ class GitHub:
         self._check_rate_limit()
 
         response = requests.get(readme_url, headers=self._get_auth_header())
-        print(response.content)
+        #print(response.content)
+        #print(response.text)
         #readme_filename = "{folder}/README+{user}+{repo}.md".format(folder=readme_folder, user=user, repo=repo)
         #with open(readme_filename, 'wb') as readme_file:
             #readme_file.write(response.content)
-        return response.content
+        return response.text
 
     def _check_rate_limit(self):
         if self._remaining_rate_limit() == 0:
