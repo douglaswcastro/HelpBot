@@ -36,7 +36,7 @@ class GitHub:
 				print(users['user'])
 
 		else:
-			print('parametro de pesquisa fora do padrão, por favor informe a pesquisa novamente')
+			print('parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente')
 
 	def process_user_repositories(self, user, search):
 		repositories = self.get_repositories_by_user(user)
