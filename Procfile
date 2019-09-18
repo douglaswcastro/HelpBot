@@ -1,0 +1,1 @@
+helpbot: python "main.py"
