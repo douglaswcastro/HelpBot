@@ -1,1 +1,1 @@
-helpbot: python "main.py"
+douglashelpbot: python "main.py"
