@@ -1,8 +1,10 @@
 from github import GitHub
+import os
+from load_env import load_dotenv
 
 user = "douglaswcastro"
 
-token = '752ad7fc02a60df65fb8f31a30ba2bdab58880f7'
+token = os.getenv("TOKEN")
 typesearch = "#Quais"
 search = "Correios"
 github = GitHub(token)
