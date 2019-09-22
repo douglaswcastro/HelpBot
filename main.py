@@ -1,26 +1,27 @@
-import os
-import json
 from flask import Flask, request
 from github import GitHub
+import os
+import json
 
 app = Flask(__name__)
 
 
 @app.route('/', methods=['POST'])
 def foo():
+	token = os.getenv("TOKEN")
 	data = json.loads(request.data)
-	print: "New commit by: {}".format(data['commits'][0]['author']['name'])
-	return "OK"
+	user = data['comment']['user']['login']
+	comentary = data['comment']['body']
+	bot = comentary[1:8]
+	typesearch = comentary[9:15].strip()
+	search = comentary[16:].lstrip()
+	text_return = ""
+	if bot.upper() != "HELPBOT":
+		text_return = "O Robô não foi citado no comentário, por favor cite o robô"
+	github = GitHub(token)
+	text_return = github.process_user_followings(user, typesearch, search)
+	return text_return
 
 
 if __name__ == '__main__':
 	app.run()
-
-
-#user = "douglaswcastro"
-
-token = os.getenv("TOKEN")
-#typesearch = "#Quais"
-#search = "Correios"
-#github = GitHub(token)
-#github.process_user_followings(user, typesearch, search)

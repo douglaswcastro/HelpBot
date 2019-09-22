@@ -13,9 +13,9 @@ class GitHub:
 
 	def process_user_followings(self, user, typesearch, search):
 		following_list = self.get_following(user)
-
+		user_return = ""
 		following_list_order = []
-		for following_user in following_list:
+		for following_user in following_list[0:2]:
 			# t = threading.Thread(target=following_list_order.append({'user': following_user, 'value': self.process_user_repositories(following_user, search)}))
 			# t.start()
 			following_list_order.append(
@@ -23,20 +23,25 @@ class GitHub:
 		# while threading.active_count() != 1:
 		# pass
 
-		if typesearch == '#Quem':
+		if typesearch.upper() == '#QUEM':
 			print(search)
 			print(typesearch)
-			print(sorted(following_list_order, key=lambda x: x['value'], reverse=True)['user'])
+			user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
+		# return user_return
 		# following_list_order.sort(reverse=True, key=myFunc)[1])
 
-		elif typesearch == '#Quais':
+		elif typesearch.upper() == '#QUAIS':
 			print(search)
 			print(typesearch)
 			for users in sorted(following_list_order, key=lambda x: x['value'], reverse=True):
 				print(users['user'])
+			user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)['user']
+		# return user_return
 
 		else:
-			print('parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente')
+			user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
+
+		return user_return
 
 	def process_user_repositories(self, user, search):
 		repositories = self.get_repositories_by_user(user)
