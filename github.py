@@ -4,6 +4,8 @@ import os
 import time
 
 API_URL = "https://api.github.com"
+owner = "douglaswcastro"
+reposity_bot = ".netcore-angular"
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -106,7 +108,7 @@ class GitHub:
 		return readme
 
 	def _download_readme(self, readme_url, user, repo):
-		readme_folder = os.path.abspath(os.path.join(SCRIPT_PATH, os.pardir)) + "/HelpBoot/readmes"
+		#readme_folder = os.path.abspath(os.path.join(SCRIPT_PATH, os.pardir)) + "/HelpBoot/readmes"
 
 		self._check_rate_limit()
 
@@ -134,3 +136,13 @@ class GitHub:
 		if self.token is not None:
 			return {'Authorization': 'token {token}'.format(token=self.token)}
 		return {}
+
+	def get_last_commit_repo(self):
+		repos_url = "{url}/repos/{owner}/{repository_bot}/commits".format(url=API_URL, owner=owner, repository_bot=reposity_bot)
+
+		self._check_rate_limit()
+
+		response = requests.get(repos_url, headers=self._get_auth_header())
+		json_response = json.loads(response.text)
+		return json_response[0]["sha"]
+
