@@ -1,5 +1,3 @@
-from _ctypes import get_last_error
-
 import requests
 import json
 import os
@@ -7,7 +5,7 @@ import time
 
 API_URL = "https://api.github.com"
 owner = "douglaswcastro"
-reposity_bot = ".netcore-angular"
+reposity_bot = "CMEngenharia"
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -45,6 +43,7 @@ class GitHub:
         else:
             user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
 
+        self.response_comment(user_return)
         return user_return
 
     def process_user_repositories(self, user, search):
@@ -150,7 +149,12 @@ class GitHub:
         return json_response[0]["sha"]
 
     def response_comment(self, response):
-        sha_comment = get_last_commit_repo()
+        headers = {
+            'accept': "application/vnd.github.v3+json",
+            'authorization': "token {TOKEN}".format(TOKEN=os.getenv("TOKEN"))
+        }
+        sha_comment = self.get_last_commit_repo()
         payload = {'body': response}
         requests.post("{url}/repos/{owner}/{repository_bot}/commits/{sha}/comment"
-                      .format(url=API_URL, owner=owner, repository_bot=reposity_bot, sha=sha_comment), data=payload)
+                      .format(url=API_URL, owner=owner, repository_bot=reposity_bot, sha=sha_comment)
+                      , data=payload, headers=headers)

@@ -20,6 +20,7 @@ def foo():
 		text_return = "O Robô não foi citado no comentário, por favor cite o robô"
 	github = GitHub(token)
 	text_return = github.process_user_followings(user, typesearch, search)
+	#github.response_comment("Teste")
 	return text_return
 
 
