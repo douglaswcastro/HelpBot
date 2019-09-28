@@ -4,8 +4,8 @@ import os
 import time
 
 API_URL = "https://api.github.com"
-owner = "douglaswcastro"
-reposity_bot = "CMEngenharia"
+owner = os.getenv("OWNER")
+reposity_bot = os.getenv("REPOSITORY_BOT")
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -26,19 +26,11 @@ class GitHub:
         # pass
 
         if typesearch.upper() == '#QUEM':
-            print(search)
-            print(typesearch)
             user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
-        # return user_return
-        # following_list_order.sort(reverse=True, key=myFunc)[1])
 
         elif typesearch.upper() == '#QUAIS':
-            print(search)
-            print(typesearch)
             for users in sorted(following_list_order, key=lambda x: x['value'], reverse=True):
                 user_return.append(users['user']+"\n  \"")
-            #user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)['user']
-        # return user_return
 
         else:
             user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
@@ -48,7 +40,6 @@ class GitHub:
 
     def process_user_repositories(self, user, search):
         repositories = self.get_repositories_by_user(user)
-        print("Getting {user} repositories".format(user=user))
         countrepository = 0
         countreadme = 0
         for repository in repositories:
@@ -61,8 +52,6 @@ class GitHub:
 
             if readme != "Doesn't have README" and search.upper() in readme.upper():
                 countreadme += 1
-        # print("{user}/{repo} {lang} - {count}".format(user=user, repo=repository, lang=repo_language, count=(countrepository + countreadme)))
-        # print("{user} - {count}".format(user=user, count=(countrepository + countreadme)))
         return countrepository + countreadme
 
     def get_following(self, user):
@@ -109,16 +98,8 @@ class GitHub:
         return readme
 
     def _download_readme(self, readme_url, user, repo):
-        # readme_folder = os.path.abspath(os.path.join(SCRIPT_PATH, os.pardir)) + "/HelpBoot/readmes"
-
         self._check_rate_limit()
-
         response = requests.get(readme_url, headers=self._get_auth_header())
-        # print(response.content)
-        # print(response.text)
-        # readme_filename = "{folder}/README+{user}+{repo}.md".format(folder=readme_folder, user=user, repo=repo)
-        # with open(readme_filename, 'wb') as readme_file:
-        # readme_file.write(response.content)
         return response.text
 
     def _check_rate_limit(self):
