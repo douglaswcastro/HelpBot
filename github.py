@@ -36,14 +36,14 @@ class GitHub:
             print(search)
             print(typesearch)
             for users in sorted(following_list_order, key=lambda x: x['value'], reverse=True):
-                print(users['user'])
-            user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)['user']
+                user_return.append(users['user']+"\n  \"")
+            #user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)['user']
         # return user_return
 
         else:
             user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
 
-        self.response_comment(user_return)
+        self.response_comment(user, user_return)
         return user_return
 
     def process_user_repositories(self, user, search):
@@ -148,13 +148,15 @@ class GitHub:
         json_response = json.loads(response.text)
         return json_response[0]["sha"]
 
-    def response_comment(self, response):
+    def response_comment(self, user, text):
+        token = os.getenv("TOKEN")
         headers = {
             'accept': "application/vnd.github.v3+json",
-            'authorization': "token {TOKEN}".format(TOKEN=os.getenv("TOKEN"))
+            'authorization': "token " + token
         }
         sha_comment = self.get_last_commit_repo()
-        payload = {'body': response}
-        requests.post("{url}/repos/{owner}/{repository_bot}/commits/{sha}/comment"
-                      .format(url=API_URL, owner=owner, repository_bot=reposity_bot, sha=sha_comment)
-                      , data=payload, headers=headers)
+        url = "{url}/repos/{owner}/{repository_bot}/commits/{sha}/comments".format(url=API_URL, owner=owner,
+                                                                                  repository_bot=reposity_bot,
+                                                                                  sha=sha_comment)
+        payload = "{\n  \"body\": \" @" + user + " \\n " + text + " \"}"
+        requests.request("POST", url, data=payload, headers=headers)
