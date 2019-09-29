@@ -4,8 +4,6 @@ import os
 import time
 
 API_URL = "https://api.github.com"
-owner = os.getenv("OWNER")
-reposity_bot = os.getenv("REPOSITORY_BOT")
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -62,6 +60,14 @@ class GitHub:
         response = requests.get(following_url, headers=self._get_auth_header())
         following_list = [user["login"] for user in json.loads(response.text)]
         return following_list
+
+    def get_followers(self, user):
+        followers_url = "{url}/users/{user}/followers".format(url=API_URL, user=user)
+        self._check_rate_limit()
+
+        response = requests.get(followers_url, headers=self._get_auth_header())
+        followers_list = [user["login"] for user in json.loads(response.text)]
+        return followers_list
 
     def get_repositories_by_user(self, user):
         repos_url = "{url}/users/{user}/repos".format(url=API_URL, user=user)
@@ -120,6 +126,8 @@ class GitHub:
         return {}
 
     def get_last_commit_repo(self):
+        owner = os.getenv("OWNER")
+        reposity_bot = os.getenv("REPOSITORY_BOT")
         repos_url = "{url}/repos/{owner}/{repository_bot}/commits".format(url=API_URL, owner=owner,
                                                                           repository_bot=reposity_bot)
 
@@ -130,6 +138,8 @@ class GitHub:
         return json_response[0]["sha"]
 
     def response_comment(self, user, text):
+        owner = os.getenv("OWNER")
+        reposity_bot = os.getenv("REPOSITORY_BOT")
         token = os.getenv("TOKEN")
         headers = {
             'accept': "application/vnd.github.v3+json",

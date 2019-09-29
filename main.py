@@ -19,8 +19,7 @@ def foo():
 	if bot.upper() != "HELPBOT":
 		text_return = "O Robô não foi citado no comentário, por favor cite o robô"
 	github = GitHub(token)
-	text_return = github.process_user_followings(user, typesearch, search)
-	return text_return
+	github.process_user_followings(user, typesearch, search)
 
 
 if __name__ == '__main__':
