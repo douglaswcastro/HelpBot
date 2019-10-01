@@ -12,22 +12,23 @@ class GitHub:
         self.token = token
 
     def process_user_followings(self, user, typesearch, search):
-        following_list = self.get_following(user)
         user_return = ""
-        following_list_order = []
-        for following_user in following_list[0:2]:
-            # t = threading.Thread(target=following_list_order.append({'user': following_user, 'value': self.process_user_repositories(following_user, search)}))
-            # t.start()
-            following_list_order.append(
-                {'user': following_user, 'value': self.process_user_repositories(following_user, search)})
-        # while threading.active_count() != 1:
-        # pass
-
         if typesearch.upper() == '#QUEM':
+            following_list_order = []
+            following_list = self.get_following(user)
+            for following_user in following_list[0:2]:
+                following_list_order.append(
+                    {'user': following_user, 'value': self.process_user_repositories(following_user, search)})
             user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
 
         elif typesearch.upper() == '#QUAIS':
-            for users in sorted(following_list_order, key=lambda x: x['value'], reverse=True):
+            followers_list_order = []
+            followers_list = self.get_followers(user)
+
+            followers_list_order.append(
+                {'user': followers_list, 'value': self.process_user_repositories(followers_list, search)})
+
+            for users in sorted(followers_list_order, key=lambda x: x['value'], reverse=True):
                 user_return.append(users['user']+"\n  \"")
 
         else:
