@@ -13,28 +13,41 @@ class GitHub:
 
     def process_user_followings(self, user, typesearch, search):
         user_return = ""
-        if typesearch.upper() == '#QUEM':
+        List_return = []
+        if typesearch.upper() == '#QUAIS':
             following_list_order = []
             following_list = self.get_following(user)
+
             for following_user in following_list[0:2]:
                 following_list_order.append(
                     {'user': following_user, 'value': self.process_user_repositories(following_user, search)})
-            user_return = sorted(following_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
 
-        elif typesearch.upper() == '#QUAIS':
+            user_return = self.process_list(following_list_order)
+
+        elif typesearch.upper() == '#QUEM':
             followers_list_order = []
             followers_list = self.get_followers(user)
 
-            followers_list_order.append(
-                {'user': followers_list, 'value': self.process_user_repositories(followers_list, search)})
+            for followers_user in followers_list[0:2]:
+                followers_list_order.append(
+                    {'user': followers_user, 'value': self.process_user_repositories(followers_user, search)})
 
-            for users in sorted(followers_list_order, key=lambda x: x['value'], reverse=True):
-                user_return.append(users['user']+"\n  \"")
-
+            user_return = self.process_list(followers_list_order)
         else:
-            user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
+            user_return = 'parametro de pesquisa fora do padrão, por favor informe a pesquisa novamente'
 
         self.response_comment(user, user_return)
+        return user_return
+
+    def process_list(self, lst_users):
+        List_return = []
+        user_return = ""
+        for users in sorted(lst_users, key=lambda x: x['value'], reverse=True):
+            if users['value'] > 0:
+                List_return.append(users['user'])
+        user_return = " - ".join(List_return)
+        if user_return == "":
+            user_return = "Nao existe nenhum resultado com a pesquisa informada"
         return user_return
 
     def process_user_repositories(self, user, search):
@@ -150,5 +163,5 @@ class GitHub:
         url = "{url}/repos/{owner}/{repository_bot}/commits/{sha}/comments".format(url=API_URL, owner=owner,
                                                                                   repository_bot=reposity_bot,
                                                                                   sha=sha_comment)
-        payload = "{\n  \"body\": \" @" + user + " \\n " + text + " \"}"
+        payload = "{\n  \"body\": \" @" + user + " - " + text + " \"}"
         requests.request("POST", url, data=payload, headers=headers)
