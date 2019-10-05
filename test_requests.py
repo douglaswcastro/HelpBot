@@ -39,6 +39,13 @@ class MyTestCase(unittest.TestCase):
 		response = requests.get(repos_url, headers=github._get_auth_header())
 		self.assertTrue(response.status_code, "200")
 
+	def test_last_commit(self):
+		owner = os.getenv("OWNER")
+		reposity_bot = os.getenv("REPOSITORY_BOT")
+		repos_url = "{url}/repos/{owner}/{repository_bot}/commits".format(url=API_URL, owner=owner,
+		                                                                  repository_bot=reposity_bot)
+		response = requests.get(repos_url, headers=github._get_auth_header())
+		self.assertTrue(response.status_code, "200")
 
 if __name__ == '__main__':
 	unittest.main()
