@@ -16,7 +16,7 @@ def foo():
 	search = comentary[16:].lstrip()
 	text_return = ""
 	if bot.upper() != "HELPBOT":
-		text_return = "O Robô não foi citado no comentário, por favor cite o robô"
+		return "O Robô não foi citado no comentário, por favor cite o robô"
 	github = GitHub(token)
 	text_return = github.process_user_followings(user, typesearch, search)
 	return text_return

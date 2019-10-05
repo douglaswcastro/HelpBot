@@ -18,7 +18,7 @@ class GitHub:
             following_list_order = []
             following_list = self.get_following(user)
 
-            for following_user in following_list[0:2]:
+            for following_user in following_list:
                 following_list_order.append(
                     {'user': following_user, 'value': self.process_user_repositories(following_user, search)})
 
@@ -28,13 +28,13 @@ class GitHub:
             followers_list_order = []
             followers_list = self.get_followers(user)
 
-            for followers_user in followers_list[0:2]:
+            for followers_user in followers_list:
                 followers_list_order.append(
                     {'user': followers_user, 'value': self.process_user_repositories(followers_user, search)})
 
             user_return = self.process_list(followers_list_order)
         else:
-            user_return = 'parametro de pesquisa fora do padrão, por favor informe a pesquisa novamente'
+            user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
 
         self.response_comment(user, user_return)
         return user_return
@@ -42,9 +42,11 @@ class GitHub:
     def process_list(self, lst_users):
         List_return = []
         user_return = ""
+
         for users in sorted(lst_users, key=lambda x: x['value'], reverse=True):
             if users['value'] > 0:
                 List_return.append(users['user'])
+
         user_return = " - ".join(List_return)
         if user_return == "":
             user_return = "Nao existe nenhum resultado com a pesquisa informada"
