@@ -56,6 +56,7 @@ class GitHub:
         repositories = self.get_repositories_by_user(user)
         countrepository = 0
         countreadme = 0
+        countmessage = 0
         for repository in repositories:
             repo_language = self.get_repository_languages(user, repository)
             for language in repo_language:
@@ -66,7 +67,13 @@ class GitHub:
 
             if readme != "Doesn't have README" and search.upper() in readme.upper():
                 countreadme += 1
-        return countrepository + countreadme
+
+            list_messages_commits = self.get_message_commits_repository(user, repository)
+            for message in list_messages_commits:
+                if search.upper() in message.upper():
+                    countmessage += 1
+                    
+        return countrepository + countreadme + countmessage
 
     def get_following(self, user):
         following_url = "{url}/users/{user}/following".format(url=API_URL, user=user)
@@ -114,8 +121,6 @@ class GitHub:
             json_response = json.loads(response.text)
             readme_url = json_response["download_url"]
             readme = self._download_readme(readme_url, user, repo)
-        else:
-            readme = "Doesn't have README"
 
         return readme
 
@@ -153,6 +158,14 @@ class GitHub:
         json_response = json.loads(response.text)
         return json_response[0]["sha"]
 
+    def get_message_commits_repository(self, user, repository):
+        repos_url = "{url}/repos/{user}/{repository}/commits".format(url=API_URL, user=user, repository=repository)
+
+        self._check_rate_limit()
+        response = requests.get(repos_url, headers=self._get_auth_header())
+
+        return [repo['commit']['message'] for repo in json.loads(response.text)]
+
     def response_comment(self, user, text):
         owner = os.getenv("OWNER")
         reposity_bot = os.getenv("REPOSITORY_BOT")
@@ -165,5 +178,5 @@ class GitHub:
         url = "{url}/repos/{owner}/{repository_bot}/commits/{sha}/comments".format(url=API_URL, owner=owner,
                                                                                   repository_bot=reposity_bot,
                                                                                   sha=sha_comment)
-        payload = "{\n  \"body\": \" @" + user + " - " + text + " \"}"
+        payload = "{\n  \"body\": \" @" + user + " \n " + text + " \"}"
         requests.request("POST", url, data=payload, headers=headers)
