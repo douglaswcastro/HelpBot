@@ -32,11 +32,11 @@ class GitHub:
                 followers_list_order.append(
                     {'user': followers_user, 'value': self.process_user_repositories(followers_user, search)})
 
-            user_return = self.process_list(followers_list_order)
+            user_return = self.process_list(sorted(followers_list_order, key=lambda x: x['value'], reverse=True)[0])
         else:
             user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
 
-        self.response_comment(user, user_return)
+        #self.response_comment(user, user_return)
         return user_return
 
     def process_list(self, lst_users):
@@ -68,10 +68,10 @@ class GitHub:
             if readme != "Doesn't have README" and search.upper() in readme.upper():
                 countreadme += 1
 
-            list_messages_commits = self.get_message_commits_repository(user, repository)
-            for message in list_messages_commits:
-                if search.upper() in message.upper():
-                    countmessage += 1
+            #list_messages_commits = self.get_message_commits_repository(user, repository)
+            #for message in list_messages_commits:
+                #if search.upper() in message.upper():
+                    #countmessage += 1
                     
         return countrepository + countreadme + countmessage
 
@@ -104,7 +104,7 @@ class GitHub:
     def get_repository_languages(self, user, repo):
         repo_url = "{url}/repos/{user}/{repo}/languages".format(url=API_URL, user=user, repo=repo)
 
-        self._check_rate_limit()
+        #self._check_rate_limit()
 
         response = requests.get(repo_url, headers=self._get_auth_header())
         repository_languages = [key for key in json.loads(response.text)]
@@ -113,7 +113,7 @@ class GitHub:
     def get_repository_readme(self, user, repo):
         repo_url = "{url}/repos/{user}/{repo}/readme".format(url=API_URL, user=user, repo=repo)
 
-        self._check_rate_limit()
+        #self._check_rate_limit()
 
         response = requests.get(repo_url, headers=self._get_auth_header())
         readme = ""
@@ -131,8 +131,7 @@ class GitHub:
 
     def _check_rate_limit(self):
         if self._remaining_rate_limit() == 0:
-            print("Wait a minute")
-            time.sleep(5)
+            time.sleep(10)
             self._check_rate_limit()
 
     def _remaining_rate_limit(self):
