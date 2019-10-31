@@ -21,7 +21,7 @@ def foo():
     github = GitHub(token)
     text_return = github.process_user_followings(user, typesearch, search)
 
-    github.response_comment(user, text_return)
+    #github.response_comment(user, text_return)
 
     return text_return
 
