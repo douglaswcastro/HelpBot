@@ -14,11 +14,13 @@ class GitHub:
     def process_user_followings(self, user, typesearch, search):
         user_return = ""
         List_return = []
+        print(typesearch)
         if typesearch.upper() == '#QUAIS':
             following_list_order = []
             following_list = self.get_following(user)
 
             for following_user in following_list:
+                print(following_user)
                 following_list_order.append(
                     {'user': following_user, 'value': self.process_user_repositories(following_user, search)})
 
@@ -29,25 +31,27 @@ class GitHub:
             followers_list = self.get_followers(user)
 
             for followers_user in followers_list:
+                print(followers_user)
                 followers_list_order.append(
                     {'user': followers_user, 'value': self.process_user_repositories(followers_user, search)})
 
-            user_return = self.process_list(sorted(followers_list_order, key=lambda x: x['value'], reverse=True)[0])
+            user_return = sorted(followers_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
         else:
             user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
-
-        #self.response_comment(user, user_return)
+        print(user_return)
+        self.response_comment(user, user_return)
         return user_return
 
     def process_list(self, lst_users):
-        List_return = []
         user_return = ""
-
+        List_return = []
         for users in sorted(lst_users, key=lambda x: x['value'], reverse=True):
+            print(users)
             if users['value'] > 0:
                 List_return.append(users['user'])
 
         user_return = " - ".join(List_return)
+
         if user_return == "":
             user_return = "Nao existe nenhum resultado com a pesquisa informada"
         return user_return
@@ -68,11 +72,11 @@ class GitHub:
             if readme != "Doesn't have README" and search.upper() in readme.upper():
                 countreadme += 1
 
-            #list_messages_commits = self.get_message_commits_repository(user, repository)
-            #for message in list_messages_commits:
-                #if search.upper() in message.upper():
-                    #countmessage += 1
-                    
+            # list_messages_commits = self.get_message_commits_repository(user, repository)
+            # for message in list_messages_commits:
+            # if search.upper() in message.upper():
+            # countmessage += 1
+
         return countrepository + countreadme + countmessage
 
     def get_following(self, user):
@@ -104,7 +108,7 @@ class GitHub:
     def get_repository_languages(self, user, repo):
         repo_url = "{url}/repos/{user}/{repo}/languages".format(url=API_URL, user=user, repo=repo)
 
-        #self._check_rate_limit()
+        # self._check_rate_limit()
 
         response = requests.get(repo_url, headers=self._get_auth_header())
         repository_languages = [key for key in json.loads(response.text)]
@@ -113,7 +117,7 @@ class GitHub:
     def get_repository_readme(self, user, repo):
         repo_url = "{url}/repos/{user}/{repo}/readme".format(url=API_URL, user=user, repo=repo)
 
-        #self._check_rate_limit()
+        # self._check_rate_limit()
 
         response = requests.get(repo_url, headers=self._get_auth_header())
         readme = ""
@@ -169,13 +173,14 @@ class GitHub:
         owner = os.getenv("OWNER")
         reposity_bot = os.getenv("REPOSITORY_BOT")
         token = os.getenv("TOKEN")
-        headers = {
-            'accept': "application/vnd.github.v3+json",
-            'authorization': "token " + token
-        }
         sha_comment = self.get_last_commit_repo()
         url = "{url}/repos/{owner}/{repository_bot}/commits/{sha}/comments".format(url=API_URL, owner=owner,
-                                                                                  repository_bot=reposity_bot,
-                                                                                  sha=sha_comment)
-        payload = "{\n  \"body\": \" @" + user + " \n " + text + " \"}"
+                                                                                   repository_bot=reposity_bot,
+                                                                                   sha=sha_comment)
+        payload = "{\n  \"body\": \" @" + user + " \\n " + text + " \"}"
+        headers = {
+            'accept': "application/vnd.github.v3+json",
+            'authorization': "token " + token,
+            'Content-Type': "application/x-www-form-urlencoded"
+        }
         requests.request("POST", url, data=payload, headers=headers)
