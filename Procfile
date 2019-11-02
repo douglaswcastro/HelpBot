@@ -1,1 +1,1 @@
-douglashelpbot: python "main.py"
+web: python foo.py
