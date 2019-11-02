@@ -1,1 +1,1 @@
-web: python main.py
+devhelpbot: python "main.py"
