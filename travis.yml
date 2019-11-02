@@ -8,7 +8,7 @@ deploy:
   skip_cleanup: true
   provider: heroku
   api_key:
-    secure: hr-L0yqv9UKNthiQY61s1g
+    secure: 782a5afb-959b-4648-b564-7ac4947630ee
   app: devhelpbot
   on:
     repo: douglaswcastro/HelpBot
