@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def foo():
+    print('inicio processamento')
     token = os.getenv("TOKEN")
     data = json.loads(request.data)
     user = data['comment']['user']['login']
