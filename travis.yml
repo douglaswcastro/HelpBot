@@ -1,0 +1,16 @@
+language: python
+python: '3.6'
+install:
+- pip install -r requirements.txt
+script:
+- python -m compileall ./main.py
+deploy:
+  skip_cleanup: true
+  provider: heroku
+  api_key:
+    secure: hr-L0yqv9UKNthiQY61s1g
+  app: devhelpbot
+  on:
+    repo: douglaswcastro/HelpBot
+notifications:
+  email: true
