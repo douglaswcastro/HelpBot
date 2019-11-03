@@ -1,1 +1,1 @@
-devhelpbot: python "main.py"
+devhelpbot: gunicorn app:app
