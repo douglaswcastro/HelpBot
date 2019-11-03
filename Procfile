@@ -1,1 +1,1 @@
-devhelpbot: gunicorn app:app
+devhelpbot: gunicorn main:app
