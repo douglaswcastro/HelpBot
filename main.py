@@ -18,7 +18,7 @@ def foo():
     comentary = data['comment']['body']
     bot = comentary[1:8]
     typesearch = comentary[9:15].strip()
-    search = comentary[14:].lstrip()
+    search = comentary[15:].lstrip()
     result = ""
     print(bot)
     if bot.upper() == "HELPBOT":
