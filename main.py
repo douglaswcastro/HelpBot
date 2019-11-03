@@ -20,10 +20,11 @@ def foo():
     typesearch = comentary[9:15].strip()
     search = comentary[14:].lstrip()
     result = ""
+    print(bot)
     if bot.upper() == "HELPBOT":
     # return "O Robô não foi citado no comentário, por favor cite o robô"
         github = GitHub(token)
-        result = q.enqueue(github.process_user_followings(user, typesearch, search))
+        result = q.enqueue(github.process_user_followings, user, typesearch, search)
     # text_return =
 
     # github.response_comment(user, text_return)
