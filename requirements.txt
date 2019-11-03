@@ -1,4 +1,6 @@
+redis
 flask
 requests<=2.22.0
 python-dotenv==0.10.1
 gunicorn==19.9.0
+rq
