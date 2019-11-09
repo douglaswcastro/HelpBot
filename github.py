@@ -35,7 +35,10 @@ class GitHub:
                 followers_list_order.append(
                     {'user': followers_user, 'value': self.process_user_repositories(followers_user, search)})
 
-            user_return = sorted(followers_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
+            if not followers_list:
+                user_return = sorted(followers_list_order, key=lambda x: x['value'], reverse=True)[0]['user']
+            else:
+                user_return = "Nao existe nenhum resultado com a pesquisa informada"
         else:
             user_return = 'parametro de pesquisa fora do padrao, por favor informe a pesquisa novamente'
         print(user_return)
