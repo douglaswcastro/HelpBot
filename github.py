@@ -79,7 +79,7 @@ class GitHub:
             # for message in list_messages_commits:
             # if search.upper() in message.upper():
             # countmessage += 1
-
+        print(user + " - " + countrepository + countreadme + countmessage)
         return countrepository + countreadme + countmessage
 
     def get_following(self, user):
